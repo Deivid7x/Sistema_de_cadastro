@@ -1,2 +1,2 @@
-Deivid;27
-Yugi;29
+deivid;27
+yugi;29

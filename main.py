@@ -1,3 +1,3 @@
-from lib.interface import *
+from lib.interface import iniciarsistema
 
 iniciarsistema()

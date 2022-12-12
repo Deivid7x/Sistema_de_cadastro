@@ -12,20 +12,29 @@ def iniciarsistema():
         criararquivo(arq)
 
     while True:
-        resposta = menu(['Ver pessoas cadastradas', 'Cadastrar nova pessoa', 'Sair do sistema'])
+        resposta = menu(['Ver pessoas cadastradas', 'Cadastrar nova pessoa', 'Apagar usuário cadastrado', 'Sair do sistema'])
         if resposta == 1:
             lerarquivo(arq)
+
         elif resposta == 2:
             cabecalho('NOVO CADASTRO')
-            nome = input('Nome: ')
+            nome = str(input('Nome: ')).strip().lower()
             idade = leiaint('Idade: ')
             cadastrar(arq, nome, idade)
+
         elif resposta == 3:
-            cabecalho('Programa encerrado. Até logo!')
+            cabecalho('APAGAR USUÁRIO')
+            nome = str(input(f'{Cor.verde()}Nome:{Cor.base()} ')).strip()
+            apagar_usuario(arq, nome)
+
+        elif resposta == 4:
+            cabecalho(f'{Cor.vermelho}Programa encerrado. Até logo!{Cor.base}')
             break
+
         else:
-            print(f'{Cor.vermelho}Opção invalida. Tente novamente.{Cor.base}')
+            print(f'{Cor.vermelho()}Opção invalida. Tente novamente.{Cor.base()}')
         sleep(2)
+
 
 # Cria um cabeçalho com texto personalizado.
 
@@ -146,12 +155,12 @@ def lerarquivo(nome):
         for pessoa in a:
             dado = pessoa.split(';')
             dado[1] = dado[1].replace('\n', '')
-            print(f'{dado[0]:<30}{dado[1]:>3} anos')
+            print(f'{dado[0].title():<30}{dado[1]:>3} anos')
     finally:
         a.close()
 
 
-# Cadastra um novo usuario.
+# Cadastra um novo usuário.
 
 
 def cadastrar(arq, nome='Desconhecido', idade=0):
@@ -165,5 +174,25 @@ def cadastrar(arq, nome='Desconhecido', idade=0):
         except:
             print('Houve um erro ao escrever no arquivo.')
         else:
-            print(f'Novo registro de {nome} criado!')
+            print(f'{Cor.verde()}Novo registro de {Cor.azulescuro()}{nome.title()}{Cor.verde()} criado!{Cor.base()}')
             a.close()
+
+
+# Deleta o usuário cadastrado.
+
+def apagar_usuario(arquivo, nome):
+    with open(arquivo, 'r') as arq:
+        dados = arq.readlines()
+    
+    encontrado = False
+    with open(arquivo, 'w') as arq:
+        for dado in dados:
+            if dado.split(';')[0] != nome:
+                arq.write(dado)
+            else:
+                encontrado = True
+
+    if not encontrado:
+        print(f'{Cor.vermelho()}Usuário não encontrado{Cor.base()}')
+    else:
+        print(f'{Cor.verde()}Usuário {Cor.vermelho()}{nome.title()}{Cor.verde()} deletado com sucesso!{Cor.base()}')
