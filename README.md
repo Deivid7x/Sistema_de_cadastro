@@ -5,6 +5,8 @@
  - Verificação de inputs do usuário.  
  - Tratativa de erro.  
  - Criação de arquivo para o armazenamento dos dados.  
- - Acesso ao arquivo com os dados cadastrados anteriormente. 
+ - Visualização dos dados de todos os usuários cadastrados.
+ - Possibilidade de atualização dos dados salvos.
+ - Possibilidade de deletar usuários cadastrados.
  
  Esse projeto está sendo atualizado para receber mais funcionalidades.

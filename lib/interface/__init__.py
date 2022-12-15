@@ -12,7 +12,7 @@ def iniciarsistema():
         criararquivo(arq)
 
     while True:
-        resposta = menu(['Ver pessoas cadastradas', 'Cadastrar nova pessoa', 'Apagar usuário cadastrado', 'Sair do sistema'])
+        resposta = menu(['Ver pessoas cadastradas', 'Cadastrar nova pessoa', 'Atualizar dados de usuário', 'Apagar usuário cadastrado', 'Sair do sistema'])
         if resposta == 1:
             lerarquivo(arq)
 
@@ -23,16 +23,22 @@ def iniciarsistema():
             cadastrar(arq, nome, idade)
 
         elif resposta == 3:
-            cabecalho('APAGAR USUÁRIO')
-            nome = str(input(f'{Cor.verde()}Nome:{Cor.base()} ')).strip()
-            apagar_usuario(arq, nome)
+            cabecalho('ATUALIZAR DADOS')
+            nome = str(input(f'{Cor.verde()}Nome:{Cor.base()} ')).strip().lower()
+            idade = leiaint(f'{Cor.verde()}Nova idade:{Cor.base()} ')
+            atualizar_dados(arq, nome, idade)
 
         elif resposta == 4:
-            cabecalho(f'{Cor.vermelho}Programa encerrado. Até logo!{Cor.base}')
+            cabecalho('APAGAR USUÁRIO')
+            nome = str(input(f'{Cor.verde()}Nome:{Cor.base()} ')).strip().lower()
+            apagar_usuario(arq, nome)
+
+        elif resposta == 5:
+            cabecalho(f'{Cor.vermelho()}Programa encerrado. Até logo!{Cor.base()}')
             break
 
         else:
-            print(f'{Cor.vermelho()}Opção invalida. Tente novamente.{Cor.base()}')
+            print(f'{Cor.vermelho()}Opção inválida. Tente novamente.{Cor.base()}')
         sleep(2)
 
 
@@ -196,3 +202,28 @@ def apagar_usuario(arquivo, nome):
         print(f'{Cor.vermelho()}Usuário não encontrado{Cor.base()}')
     else:
         print(f'{Cor.verde()}Usuário {Cor.vermelho()}{nome.title()}{Cor.verde()} deletado com sucesso!{Cor.base()}')
+
+
+# Atualiza os dados do usuário
+
+def atualizar_dados(arq, nome, idade):
+    with open(arq, 'r') as arquivo:
+        # Lê as linhas do arquivo
+        lines = arquivo.readlines()
+
+    usuario_encontrado = False
+    with open(arq, 'w') as arquivo:
+        # Atualiza os dados do usuário
+        for line in lines:
+            data = line.split(';')
+            if data[0] == nome:
+                # Se o usuário for encontrado, atualiza os dados
+                arquivo.write(f"{nome};{idade}\n")
+                usuario_encontrado = True
+            else:
+                arquivo.write(line)
+
+    if usuario_encontrado:
+        print(f"{Cor.verde()}Registro atualizado com sucesso!{Cor.base()}")
+    else:
+        print(f"{Cor.vermelho()}Usuário não encontrado.{Cor.base()}")
