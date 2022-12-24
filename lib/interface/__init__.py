@@ -19,18 +19,16 @@ def iniciarsistema():
         elif resposta == 2:
             cabecalho('NOVO CADASTRO')
             nome = str(input('Nome: ')).strip().lower()
-            idade = leiaint('Idade: ')
-            cadastrar(arq, nome, idade)
+            cadastrar(arq, nome)
 
         elif resposta == 3:
             cabecalho('ATUALIZAR DADOS')
-            nome = str(input(f'{Cor.verde()}Nome:{Cor.base()} ')).strip().lower()
-            idade = leiaint(f'{Cor.verde()}Nova idade:{Cor.base()} ')
-            atualizar_dados(arq, nome, idade)
+            nome = str(input(f'{Cor.azulescuro()}Nome:{Cor.base()} ')).strip().lower()
+            atualizar_dados(arq, nome)
 
         elif resposta == 4:
             cabecalho('APAGAR USUÁRIO')
-            nome = str(input(f'{Cor.verde()}Nome:{Cor.base()} ')).strip().lower()
+            nome = str(input(f'{Cor.azulescuro()}Nome:{Cor.base()} ')).strip().lower()
             apagar_usuario(arq, nome)
 
         elif resposta == 5:
@@ -158,10 +156,12 @@ def lerarquivo(nome):
         print(f'{Cor.vermelho()}Erro ao ler arquivo.{Cor.base()}')
     else:
         cabecalho('PESSOAS CADASTRADAS')
+        identificacao = 'Nome', 'Nascimento'
+        print(f'{Cor.roxo()}{identificacao[0]:<30}{identificacao[1]:>3}{Cor.base()}')
         for pessoa in a:
             dado = pessoa.split(';')
             dado[1] = dado[1].replace('\n', '')
-            print(f'{dado[0].title():<30}{dado[1]:>3} anos')
+            print(f'{dado[0].title():<30}{dado[1]:>3}')
     finally:
         a.close()
 
@@ -169,19 +169,23 @@ def lerarquivo(nome):
 # Cadastra um novo usuário.
 
 
-def cadastrar(arq, nome='Desconhecido', idade=0):
+def cadastrar(arq, nome='Desconhecido'):
     try:
-        a = open(arq, 'at')
-    except:
-        print('ERRO na abertura do arquivo.')
+        with open(arq, 'a') as arquivo:
+            dia = leiaint(f'{Cor.verde()}Dia de nascimento:{Cor.base()} ')
+            mes = leiaint(f'{Cor.verde()}Mês de nascimento:{Cor.base()} ')
+            ano = leiaint(f'{Cor.verde()}Ano de nascimento:{Cor.base()} ')
+            if dia < 10:
+                dia = f'0{dia}'
+            if mes < 10:
+                mes = f'0{mes}'
+            data_nascimento = f'{dia}/{mes}/{ano}'
+            arquivo.write(f'{nome};{data_nascimento}\n')
+    except Exception as e:
+        print(f'{Cor.vermelho()}Erro ao cadastrar pessoa: {e}{Cor.base()}')
     else:
-        try:
-            a.write(f'{nome};{idade}\n')
-        except:
-            print('Houve um erro ao escrever no arquivo.')
-        else:
-            print(f'{Cor.verde()}Novo registro de {Cor.azulescuro()}{nome.title()}{Cor.verde()} criado!{Cor.base()}')
-            a.close()
+        print(f'{Cor.verde()}Novo registro de {nome.title()} adicionado!{Cor.base()}')
+        arquivo.close()
 
 
 # Deleta o usuário cadastrado.
@@ -206,24 +210,33 @@ def apagar_usuario(arquivo, nome):
 
 # Atualiza os dados do usuário
 
-def atualizar_dados(arq, nome, idade):
-    with open(arq, 'r') as arquivo:
-        # Lê as linhas do arquivo
-        lines = arquivo.readlines()
-
-    usuario_encontrado = False
-    with open(arq, 'w') as arquivo:
-        # Atualiza os dados do usuário
-        for line in lines:
-            data = line.split(';')
-            if data[0] == nome:
-                # Se o usuário for encontrado, atualiza os dados
-                arquivo.write(f"{nome};{idade}\n")
-                usuario_encontrado = True
-            else:
-                arquivo.write(line)
-
-    if usuario_encontrado:
-        print(f"{Cor.verde()}Registro atualizado com sucesso!{Cor.base()}")
+def atualizar_dados(arq, nome):
+    try:
+        with open(arq, 'r') as arquivo:
+            linhas = arquivo.readlines()
+    except Exception as e:
+        print(f'{Cor.vermelho()}Erro ao ler arquivo: {e}{Cor.base()}')
     else:
-        print(f"{Cor.vermelho()}Usuário não encontrado.{Cor.base()}")
+        encontrado = False
+        with open(arq, 'w') as arquivo:
+            for linha in linhas:
+                dado = linha.split(';')
+                if dado[0] == nome:
+                    encontrado = True
+                    dia = leiaint(f'{Cor.azulescuro()}Dia de nascimento:{Cor.base()} ')
+                    mes = leiaint(f'{Cor.azulescuro()}Mês de nascimento:{Cor.base()} ')
+                    ano = leiaint(f'{Cor.azulescuro()}Ano de nascimento:{Cor.base()} ')
+                    if dia < 10:
+                        dia = f'0{dia}'
+                    if mes < 10:
+                        mes = f'0{mes}'
+                    data_nascimento = f'{dia}/{mes}/{ano}'
+                    arquivo.write(f'{nome};{data_nascimento}\n')
+                else:
+                    arquivo.write(linha)
+        if not encontrado:
+            print(f'{Cor.vermelho()}Registro não encontrado.{Cor.base()}')
+        else:
+            print(f'{Cor.verde()}Registro de {nome.title()} atualizado com sucesso!{Cor.base()}')
+        arquivo.close()
+
