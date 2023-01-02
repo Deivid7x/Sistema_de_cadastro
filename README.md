@@ -9,4 +9,4 @@
  - Possibilidade de atualização dos dados salvos.
  - Possibilidade de deletar usuários cadastrados.
  
- Esse projeto está sendo atualizado para receber mais funcionalidades.
+ Todo o sistema foi criado utilizando apenas a linguagem python.
